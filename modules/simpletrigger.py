@@ -10,7 +10,8 @@ class Main(Module):
         self.output = self._process()
 
     def _process(self):
-        output = {}
-        output = copy.deepcopy(list(self.inputs.items())[0][1])
-        output['value'] = not output['value']
+        output = copy.deepcopy(self.output)
+        # reverse output during raising edge
+        if self.inputs[list(self.inputs.items())[0][0]]['value']:
+            output['value'] = not output['value']
         return output

@@ -11,9 +11,9 @@ class Main(Module):
 
     def _process(self):
         output = {}
-        output['value'] = True
+        output['value'] = False
         for input_name in self.inputs:
-            if not self.inputs[input_name]['value']:
-                output['value'] = False
+            if self.inputs[input_name]['value']:
+                output['value'] = True
                 break
         return output
