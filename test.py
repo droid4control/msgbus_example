@@ -6,6 +6,9 @@ from modules.logic_not import Main as Not
 from modules.simpletrigger import Main as SimpleTrigger
 from modules.debug import Main as DebugOut
 
+from functools import partial
+import tornado.ioloop
+
 import sys
 import logging
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
@@ -72,32 +75,32 @@ DebugOut(msgbus,
 # Test flows
 log.info("test NOT module")
 log.info("a1 on")
-msgbus.publish("a1", {"value": True})
+tornado.ioloop.IOLoop.instance().run_sync(partial(msgbus.publish, "a1", {"value": True}))
 log.info("a1 on")
-msgbus.publish("a1", {"value": True})
+tornado.ioloop.IOLoop.instance().run_sync(partial(msgbus.publish, "a1", {"value": True}))
 log.info("a1 off")
-msgbus.publish("a1", {"value": False})
+tornado.ioloop.IOLoop.instance().run_sync(partial(msgbus.publish, "a1", {"value": False}))
 log.info("a1 off")
-msgbus.publish("a1", {"value": False})
+tornado.ioloop.IOLoop.instance().run_sync(partial(msgbus.publish, "a1", {"value": False}))
 
 log.info("test ON/OFF switch")
 log.info("switch1 ON")
-msgbus.publish("switch1", {"value": True})
+tornado.ioloop.IOLoop.instance().run_sync(partial(msgbus.publish, "switch1", {"value": True}))
 log.info("switch1 still ON")
-msgbus.publish("switch1", {"value": True})
+tornado.ioloop.IOLoop.instance().run_sync(partial(msgbus.publish, "switch1", {"value": True}))
 log.info("switch1 OFF")
-msgbus.publish("switch1", {"value": False})
+tornado.ioloop.IOLoop.instance().run_sync(partial(msgbus.publish, "switch1", {"value": False}))
 
 log.info("test pulse switch")
 log.info("switch2 ON")
-msgbus.publish("switch2", {"value": True})
+tornado.ioloop.IOLoop.instance().run_sync(partial(msgbus.publish, "switch2", {"value": True}))
 log.info("switch2 OFF")
-msgbus.publish("switch2", {"value": False})
+tornado.ioloop.IOLoop.instance().run_sync(partial(msgbus.publish, "switch2", {"value": False}))
 log.info("switch2 ON")
-msgbus.publish("switch2", {"value": True})
+tornado.ioloop.IOLoop.instance().run_sync(partial(msgbus.publish, "switch2", {"value": True}))
 log.info("switch2 OFF")
-msgbus.publish("switch2", {"value": False})
+tornado.ioloop.IOLoop.instance().run_sync(partial(msgbus.publish, "switch2", {"value": False}))
 log.info("switch2 ON")
-msgbus.publish("switch2", {"value": True})
+tornado.ioloop.IOLoop.instance().run_sync(partial(msgbus.publish, "switch2", {"value": True}))
 log.info("switch2 OFF")
-msgbus.publish("switch2", {"value": False})
+tornado.ioloop.IOLoop.instance().run_sync(partial(msgbus.publish, "switch2", {"value": False}))
