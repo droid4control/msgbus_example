@@ -10,6 +10,7 @@ class MsgBus(object):
     ''' Message bus '''
     def __init__(self,):
         self._subscriptions = {}
+        self._published = {}
 
     def subscribe(self, token, subject, owner, func):
         ''' Subscribe a bus message listener
@@ -36,7 +37,19 @@ class MsgBus(object):
         for owner in self._subscriptions.keys():
             for token in self._subscriptions[owner].keys():
                 if subject in self._subscriptions[owner][token]:
-                    self._subscriptions[owner][token][subject](token, subject, copy.deepcopy(message))
+                    try:
+                        if not owner in self._published:
+                            self._published[owner] = {}
+                        if not token in self._published[owner]:
+                            self._published[owner][token] = {}
+                        if subject in self._published[owner][token]:
+                            raise Exception('cant use publish(%s) inside "%s" subscription. running publish() aborted' % (subject, subject))
+                        self._published[owner][token][subject] = True
+                        self._subscriptions[owner][token][subject](token, subject, copy.deepcopy(message))
+                    except Exception as ex:
+                        raise ex
+                    finally:
+                        del self._published[owner][token][subject]
 
     def unsubscribe(self, token, subject, owner):
         ''' Unsubscribe a bus message listener
@@ -59,6 +72,14 @@ class MsgBus(object):
             del self._subscriptions[owner][token]
         if not len(self._subscriptions[owner]):
             del self._subscriptions[owner]
+        if owner in self._published:
+            if token in self._published[owner]:
+                if subject in self._published[owner][token]:
+                    del self._published[owner][token][subject]
+                    if not len(self._published[owner][token]):
+                        del self._published[owner][token]
+                    if not len(self._published[owner]):
+                        del self._published[owner]
 
     def unsubscribe_all(self, owner):
         ''' Unsubscribe all listeners of one owner
@@ -68,6 +89,8 @@ class MsgBus(object):
         log.info('unsubscribe_all(%s)', str(owner))
         if owner in self._subscriptions:
             del self._subscriptions[owner]
+        if owner in self._published:
+            del self._published[owner]
 
     def __str__(self):
         s = 'Subscriptions:'
